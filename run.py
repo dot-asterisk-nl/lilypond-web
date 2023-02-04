@@ -28,7 +28,7 @@ def form_post(input: str = "",
         return "Something wrong...please follow correct lilypond syntax for input text"
     else:
         return send_file(output_filepath,
-                         attachment_filename=output_filepath.split("/")[-1],
+                         #attachment_filename=output_filepath.split("/")[-1],
                          conditional=True)
 
 

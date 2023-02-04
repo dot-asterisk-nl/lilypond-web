@@ -3,12 +3,14 @@ from flask import Flask, request, render_template, send_file
 from app.service.file_operator import FileOperator
 from app.service.score_generator import ScoreGenerator
 
+from config import Config
+
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 _score_generator = ScoreGenerator.load_default()
 
-supported_extensions=['pdf', 'svg', 'midi']
+
 
 @app.route('/')
 def landing_page():
@@ -23,11 +25,11 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
 
     file_operator_instance = file_operator_factory.load_default()
     
-    if extension in supported_extensions:
+    if extension in Config.supported_extensions:
         #why yes I am in fact paranoid
-        extension = supported_extensions[supported_extensions.index(extension)]
+        extension = Config.supported_extensions[Config.supported_extensions.index(extension)]
     else:
-        extension = supported_extensions[0];
+        extension = Config.supported_extensions[0];
 
     file_operator_instance.set_extension(extension)
     output_filepath = score_generator.run(text, file_operator_instance)
@@ -40,7 +42,7 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
             <li>Is <i>layout</i> and/or <i>midi</i> included?</li>
             <li>If not using the web interface, is your filetype supported?</li>
         </ul>
-        ''' + "Supported extensions: " + ','.join(str(e) for e in supported_extensions);
+        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions);
     else:
         return send_file(output_filepath,
                          #attachment_filename=output_filepath.split("/")[-1],

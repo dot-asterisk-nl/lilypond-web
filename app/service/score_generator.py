@@ -36,8 +36,13 @@ class ScoreGenerator:
         file_operator.write_text_to_file(input_text)
         os.chdir(file_operator.workdir)
 
-        svgflag = '-dbackend=svg' if file_operator.get_extension() == 'svg' else ''
-        subprocess.run([self._lilypond_path, svgflag, file_operator.input_filepath])
+        extflag = ''
+        if file_operator.get_extension() == 'svg':
+            extflag = '-dbackend=svg'
+        elif file_operator.get_extension() == 'png':
+            extflag = '-fpng'
+
+        subprocess.run([self._lilypond_path, extflag, file_operator.input_filepath])
 
         file_operator.remove_input_file()
 

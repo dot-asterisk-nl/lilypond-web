@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, send_file, after_this_request
+from waitress import serve
 
 from app.service.file_operator import FileOperator
 from app.service.score_generator import ScoreGenerator
@@ -59,5 +60,4 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
 
 
 if __name__ == "__main__":
-    app.run(port=8080,
-            host="0.0.0.0")
+    serve(app,port=8080,host="0.0.0.0")

@@ -1,5 +1,5 @@
-FROM python:3.8.0-slim-buster
-LABEL maintainer="chilledgeek@gmail.com"
+FROM python:3-slim-bullseye
+LABEL maintainer="marcel@dot-asterisk.nl"
 ARG VERSION=2.24.0
 USER root
 

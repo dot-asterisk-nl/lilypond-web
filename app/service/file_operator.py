@@ -12,7 +12,7 @@ class FileOperator:
         self.workdir = workdir
         self.input_filepath = os.path.join(self.workdir,
                                            f"request_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')}.ly")
-        self.output_filepath = f"{self.input_filepath[:-3]}.svg"
+        self.extension = 'pdf'
 
     @staticmethod
     def load_default():
@@ -31,3 +31,12 @@ class FileOperator:
     def remove_input_file(self):
         if os.path.isfile(self.input_filepath):
             os.remove(self.input_filepath)
+
+    def set_extension(self, extension):
+        self.extension = extension
+
+    def get_extension(self):
+        return self.extension
+
+    def get_output_filepath(self):
+        return f"{self.input_filepath[:-3]}.{self.extension}"

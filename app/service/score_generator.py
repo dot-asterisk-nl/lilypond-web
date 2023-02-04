@@ -42,7 +42,7 @@ class ScoreGenerator:
         elif file_operator.get_extension() == 'png':
             extflag = '-fpng'
 
-        subprocess.run([self._lilypond_path, extflag, file_operator.input_filepath])
+        subprocess.run(['timeout', '5', self._lilypond_path, extflag, file_operator.input_filepath])
 
         file_operator.remove_input_file()
 

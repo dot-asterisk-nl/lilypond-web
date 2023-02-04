@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, send_file, after_this_request
 
 from app.service.file_operator import FileOperator
 from app.service.score_generator import ScoreGenerator
@@ -41,11 +41,20 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
             <li>Does the lilypond code compile properly?</li>
             <li>Is <i>layout</i> and/or <i>midi</i> included?</li>
             <li>If not using the web interface, is your filetype supported?</li>
+            <li>There is a maximum processing time of 5 seconds for a .ly file, please optimize your code</li>
         </ul>
         ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions);
     else:
+        @after_this_request
+        def delete_file(response):
+            try:
+                file_operator_instance.remove_output_file()
+                return response
+            except Exception as ex:
+                print(ex)
+                return response
+
         return send_file(output_filepath,
-                         #attachment_filename=output_filepath.split("/")[-1],
                          conditional=True)
 
 

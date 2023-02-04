@@ -32,6 +32,10 @@ class FileOperator:
         if os.path.isfile(self.input_filepath):
             os.remove(self.input_filepath)
 
+    def remove_output_file(self):
+        if os.path.isfile(self.get_output_filepath()):
+            os.remove(self.get_output_filepath())
+
     def set_extension(self, extension):
         self.extension = extension
 

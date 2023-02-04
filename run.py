@@ -15,10 +15,10 @@ def landing_page():
 
 
 @app.route('/', methods=['POST'])
-def form_post(input: str = "",
-              score_generator: ScoreGenerator = _score_generator,
+def form_post(score_generator: ScoreGenerator = _score_generator,
               file_operator_factory: FileOperator = FileOperator):
-    text = request.form['lilypond_text'] if not input else input
+    text = request.form['lilypond_text']
+    #extension = request.form['extension']
 
     file_operator_instance = file_operator_factory.load_default()
 

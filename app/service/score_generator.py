@@ -36,7 +36,7 @@ class ScoreGenerator:
         file_operator.write_text_to_file(input_text)
         os.chdir(file_operator.workdir)
 
-        subprocess.run([self._lilypond_path, file_operator.input_filepath])
+        subprocess.run([self._lilypond_path, '-fsvg', file_operator.input_filepath])
 
         file_operator.remove_input_file()
 

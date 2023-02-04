@@ -13,7 +13,7 @@
         Input your <a href = "http://lilypond.org/">lilypond</a> code below and click submit to generate your music score
     </p>
     <p>
-        Here is the simple <a href = "https://github.com/chilledgeek/alpine-lilypond">github code used to generate this service</a>
+        Here is the simple <a href = "https://github.com/dot-asterisk-nl/lilypond-web">github code used to generate this service</a>
     </p>
 
 <form method="POST">
@@ -25,7 +25,10 @@
                   maxlength="9999999"
         >
         </textarea>
-
+        <select name="extension">
+          <option value="svg">pdf</option>
+          <option value="midi">midi</option>
+        </select>
     <input type="submit">
 </form>
 

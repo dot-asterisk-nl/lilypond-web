@@ -12,7 +12,7 @@ class FileOperator:
         self.workdir = workdir
         self.input_filepath = os.path.join(self.workdir,
                                            f"request_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')}.ly")
-        self.output_filepath = f"{self.input_filepath[:-3]}.pdf"
+        self.output_filepath = f"{self.input_filepath[:-3]}.svg"
 
     @staticmethod
     def load_default():

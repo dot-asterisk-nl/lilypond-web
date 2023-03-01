@@ -42,5 +42,8 @@ class FileOperator:
     def get_extension(self):
         return self.extension
 
+    def get_base_file_name(self):
+        return f"{self.input_filepath[:-3]}"
+
     def get_output_filepath(self):
-        return f"{self.input_filepath[:-3]}.{self.extension}"
+        return f"{self.get_base_file_name()}.{self.extension}"

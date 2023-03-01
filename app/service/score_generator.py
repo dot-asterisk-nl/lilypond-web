@@ -44,6 +44,10 @@ class ScoreGenerator:
 
         subprocess.run(['timeout', '5', self._lilypond_path, extflag, file_operator.input_filepath])
 
+        if file_operator.get_extension() == 'mp3':
+            command = 'timidity {fname}.midi -Ow -o - | ffmpeg -i - {fname}.mp3'.format(fname = file_operator.get_base_file_name())
+            subprocess.run(["bash", "-c", command])
+
         file_operator.remove_input_file()
 
         output_filepath = file_operator.get_output_filepath()

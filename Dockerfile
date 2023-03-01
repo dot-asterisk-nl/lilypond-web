@@ -5,6 +5,9 @@ USER root
 
 WORKDIR /app
 
+# Prerequisites
+RUN apt update && apt install -y timidity ffmpeg
+
 # Lilypond installation
 ADD https://gitlab.com/lilypond/lilypond/-/releases/v$VERSION/downloads/lilypond-$VERSION-linux-x86_64.tar.gz ./
 RUN mkdir /lilypond; tar -xf lilypond-$VERSION-linux-x86_64.tar.gz -C /lilypond; chown -R 1001:1001 /lilypond; mv /lilypond/lilypond-$VERSION/* /lilypond; rm -r /lilypond/lilypond-$VERSION;

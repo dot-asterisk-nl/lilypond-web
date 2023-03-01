@@ -54,10 +54,8 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
             except Exception as ex:
                 print(ex)
                 return response
-
-        return send_file(output_filepath,
+            return send_file(output_filepath,
                          conditional=True)
-
 
 if __name__ == "__main__":
     serve(app,port=8080,host="0.0.0.0")

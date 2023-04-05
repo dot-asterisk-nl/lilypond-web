@@ -1,6 +1,6 @@
 # Lilypond Web Service
 - Lightweight service that runs simple webpage to access Lilypond functionalities
-- Based on chilledgeek/lilypond-web [chilledgeek/lilypond-web](https://www.github.com/chilledgeek/lilypond-web)
+- Based on [chilledgeek/lilypond-web](https://www.github.com/chilledgeek/lilypond-web)
 - Default port is set to 8080, no further configuration is necessary/possible
 
 # How to use

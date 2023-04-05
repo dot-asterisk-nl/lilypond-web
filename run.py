@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, send_file, after_this_request
+from flask_cors import CORS
 from waitress import serve
 
 from app.service.file_operator import FileOperator
@@ -7,6 +8,7 @@ from app.service.score_generator import ScoreGenerator
 from config import Config
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(__name__)
 
 _score_generator = ScoreGenerator.load_default()
@@ -44,18 +46,18 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
             <li>If not using the web interface, is your filetype supported?</li>
             <li>There is a maximum processing time of 5 seconds for a .ly file, please optimize your code</li>
         </ul>
-        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions);
+        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions), 400;
     else:
         @after_this_request
         def delete_file(response):
             try:
-                file_operator_instance.remove_output_file()
+                file_operator_instance.clean_up()
                 return response
             except Exception as ex:
                 print(ex)
                 return response
-            return send_file(output_filepath,
-                         conditional=True)
+
+        return send_file(output_filepath, conditional=True)
 
 if __name__ == "__main__":
     serve(app,port=8080,host="0.0.0.0")

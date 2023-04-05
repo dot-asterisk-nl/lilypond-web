@@ -32,9 +32,18 @@ class FileOperator:
         if os.path.isfile(self.input_filepath):
             os.remove(self.input_filepath)
 
-    def remove_output_file(self):
+    def clean_up(self):
         if os.path.isfile(self.get_output_filepath()):
             os.remove(self.get_output_filepath())
+
+        midipath = self.get_base_file_name() + ".midi"
+        if os.path.isfile(midipath):
+            os.remove(midipath)
+
+        pdfpath = self.get_base_file_name() + ".pdf"
+        if os.path.isfile(pdfpath):
+            os.remove(pdfpath)
+
 
     def set_extension(self, extension):
         self.extension = extension

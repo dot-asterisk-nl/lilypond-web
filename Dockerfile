@@ -1,4 +1,4 @@
-FROM python:3-slim-bullseye
+FROM python:3-slim
 LABEL maintainer="marcel@dot-asterisk.nl"
 ARG VERSION=2.24.0
 USER root
@@ -15,7 +15,7 @@ RUN rm -rf lilypond-$VERSION-linux-x86_64.tar.gz
 
 #Workdir creation
 RUN mkdir -p /workdir
-RUN chmod -R 777 /workdir
+RUN chmod -R 777 /workdir && chown 1001:1001 /workdir
 
 #App configuration
 COPY . .

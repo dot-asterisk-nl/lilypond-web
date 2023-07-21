@@ -14,7 +14,6 @@ app.config.from_object(__name__)
 _score_generator = ScoreGenerator.load_default()
 
 
-
 @app.route('/')
 def landing_page():
     return render_template("home.html")
@@ -27,12 +26,12 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
     extension = request.form['extension']
 
     file_operator_instance = file_operator_factory.load_default()
-    
+
     if extension in Config.supported_extensions:
-        #why yes I am in fact paranoid
+        # why yes I am in fact paranoid
         extension = Config.supported_extensions[Config.supported_extensions.index(extension)]
     else:
-        extension = Config.supported_extensions[0];
+        extension = Config.supported_extensions[0]
 
     file_operator_instance.set_extension(extension)
     output_filepath = score_generator.run(text, file_operator_instance)
@@ -46,7 +45,7 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
             <li>If not using the web interface, is your filetype supported?</li>
             <li>There is a maximum processing time of 5 seconds for a .ly file, please optimize your code</li>
         </ul>
-        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions), 400;
+        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions), 400
     else:
         @after_this_request
         def delete_file(response):
@@ -59,5 +58,6 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
 
         return send_file(output_filepath, conditional=True)
 
+
 if __name__ == "__main__":
-    serve(app,port=8080,host="0.0.0.0")
+    serve(app, port=8080, host="0.0.0.0")

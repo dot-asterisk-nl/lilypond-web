@@ -11,7 +11,7 @@ class FileOperator:
                  ):
         self.workdir = workdir
         self.input_filepath = os.path.join(self.workdir,
-                                           f"request_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')}.ly")
+        f"request_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')}.ly")
         self.extension = 'pdf'
 
     @staticmethod

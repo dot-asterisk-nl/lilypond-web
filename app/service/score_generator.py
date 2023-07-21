@@ -36,13 +36,13 @@ class ScoreGenerator:
         file_operator.write_text_to_file(input_text)
         os.chdir(file_operator.workdir)
 
-        extflag = ''
+        flags = []
         if file_operator.get_extension() == 'svg':
-            extflag = '-dbackend=svg'
+            flags.append('-dbackend=svg')
         elif file_operator.get_extension() == 'png':
-            extflag = '-fpng'
+            flags += ['-dtall-page-formats=png','-dresolution=750']
 
-        subprocess.run(['timeout', '5', self._lilypond_path, extflag, file_operator.input_filepath])
+        lily_process = subprocess.run(['timeout', '5', self._lilypond_path] + flags + [file_operator.input_filepath])
 
         if file_operator.get_extension() == 'mp3':
             command = 'timidity {fname}.midi -Ow -o - | ffmpeg -i - {fname}.mp3'.format(fname = file_operator.get_base_file_name())
@@ -51,7 +51,7 @@ class ScoreGenerator:
         file_operator.remove_input_file()
 
         output_filepath = file_operator.get_output_filepath()
-        if os.path.isfile(output_filepath):
+        if os.path.isfile(output_filepath) and lily_process.returncode == 0:
             output = output_filepath
         else:
             output = None

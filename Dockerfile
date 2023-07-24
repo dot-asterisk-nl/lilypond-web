@@ -1,6 +1,6 @@
 FROM python:3-slim
 LABEL maintainer="marcel@dot-asterisk.nl"
-ARG VERSION=2.24.0
+ARG VERSION=2.24.1
 USER root
 
 WORKDIR /app

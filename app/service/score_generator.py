@@ -1,9 +1,18 @@
 import os
 import subprocess
+import sys
 from typing import Union
 
 from app.service.file_operator import FileOperator
 from config import Config
+
+
+class LilypondException(Exception):
+    pass
+
+
+class TimidityException(Exception):
+    pass
 
 
 class ScoreGenerator:
@@ -21,6 +30,19 @@ class ScoreGenerator:
         """
         score_generator = ScoreGenerator(Config.lilypond_path)
         return score_generator
+
+    def format_log(self, log_type, log):
+        return "\n--" + log_type + "--\n" + log.decode("utf-8") + "\n------"
+
+    def handle_subprocess(self, exception_class, popenargs: list):
+        try:
+            print("Running: \"" + ' '.join(popenargs) + "\"")
+            output = subprocess.check_output(popenargs, stderr=subprocess.STDOUT)
+            print(self.format_log("OUTPUT", output))
+        except subprocess.CalledProcessError as e:
+            logs = self.format_log("ERROR", e.output)
+            print(logs)
+            raise exception_class(logs)
 
     def run(self,
             input_text: str,
@@ -40,20 +62,16 @@ class ScoreGenerator:
         if file_operator.get_extension() == 'svg':
             flags.append('-dbackend=svg')
         elif file_operator.get_extension() == 'png':
-            flags += ['-dtall-page-formats=png','-dresolution=750']
+            flags += ['-dtall-page-formats=png', '-dresolution=750']
 
-        lily_process = subprocess.run(['timeout', '5', self._lilypond_path] + flags + [file_operator.input_filepath])
+        self.handle_subprocess(LilypondException,
+                               ['timeout', '5', self._lilypond_path] + flags + [file_operator.input_filepath])
 
         if file_operator.get_extension() == 'mp3':
-            command = 'timidity {fname}.midi -Ow -o - | ffmpeg -i - {fname}.mp3'.format(fname = file_operator.get_base_file_name())
-            subprocess.run(["bash", "-c", command])
+            command = 'timidity {fname}.midi -Ow -o - | ffmpeg -i - {fname}.mp3'.format(
+                fname=file_operator.get_base_file_name())
+            self.handle_subprocess(TimidityException, ["bash", "-c", command])
 
         file_operator.remove_input_file()
 
-        output_filepath = file_operator.get_output_filepath()
-        if os.path.isfile(output_filepath) and lily_process.returncode == 0:
-            output = output_filepath
-        else:
-            output = None
-
-        return output
+        return file_operator.get_output_filepath()

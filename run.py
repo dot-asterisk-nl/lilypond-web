@@ -1,9 +1,9 @@
-from flask import Flask, request, render_template, send_file, after_this_request
+from flask import Flask, request, render_template, send_file, after_this_request, make_response
 from flask_cors import CORS
 from waitress import serve
 
 from app.service.file_operator import FileOperator
-from app.service.score_generator import ScoreGenerator
+from app.service.score_generator import ScoreGenerator, LilypondException, TimidityException
 
 from config import Config
 
@@ -34,29 +34,28 @@ def form_post(score_generator: ScoreGenerator = _score_generator,
         extension = Config.supported_extensions[0]
 
     file_operator_instance.set_extension(extension)
-    output_filepath = score_generator.run(text, file_operator_instance)
+    @after_this_request
+    def delete_file(response):
+        try:
+            #file_operator_instance.clean_up()
+            return response
+        except Exception as ex:
+            print(ex)
+            return response
 
-    if output_filepath is None:
-        return '''
-        Something went wrong, as the requested file does not exist. Please check the following:
-        <ul>
-            <li>Does the lilypond code compile properly?</li>
-            <li>Is <i>layout</i> and/or <i>midi</i> included?</li>
-            <li>If not using the web interface, is your filetype supported?</li>
-            <li>There is a maximum processing time of 5 seconds for a .ly file, please optimize your code</li>
-        </ul>
-        ''' + "Supported extensions: " + ','.join(str(e) for e in Config.supported_extensions), 400
-    else:
-        @after_this_request
-        def delete_file(response):
-            try:
-                file_operator_instance.clean_up()
-                return response
-            except Exception as ex:
-                print(ex)
-                return response
-
+    try:
+        output_filepath = score_generator.run(text, file_operator_instance)
         return send_file(output_filepath, conditional=True)
+    except LilypondException as e:
+        response = make_response(str(e), 400)
+        response.headers.add_header("X-Error-Type", "LilypondException")
+        response.mimetype = "text/plain"
+        return response
+    except TimidityException as e:
+        response = make_response(str(e), 400)
+        response.headers.add_header("X-Error-Type", "TimidityException")
+        response.mimetype = "text/plain"
+        return response
 
 
 if __name__ == "__main__":
